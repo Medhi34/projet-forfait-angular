@@ -1,0 +1,138 @@
+<main class="row justify-content-center">
+    <form class="form" [formGroup]="formdata">
+        <div class="progression">
+            <div class="progress my-3">
+                <div id="progress-bar" class="progress-bar {{finalCSS}}" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: {{progression}}%"></div>
+            </div>
+        </div>
+        <span *ngIf="step == 1; then step1"></span>
+        <span *ngIf="step == 2; then step2"></span>
+        <span *ngIf="step == 3; then step3"></span>
+        <span *ngIf="step == 4; then step4"></span>
+        <ng-template #step1>
+            <div class="form-content">
+                <div class="form-header my-4">
+                    <h6 class="text-center">Step 1</h6>
+                    <button class="btn btn-outline-secondary" routerLink="/" type="button"><i class="bi bi-arrow-left"></i>Home</button>
+                </div>
+                <div class="form-main my-4">
+                    <h4>Make a priority</h4>
+                    <small>the priorities vary between 0 and 3. 3 for largest and 0 for smallest. Select a priority for SMS, call, and data. If you don't have a priority, just put 0 in all the form.</small>
+                    <div class="row my-2">
+                        <div class="col-sm-4 mb-3">
+                            <label for="" class="form-label">SMS</label>
+                            <select class="form-select form-select-lg {{msgError.sms_color}}" name="sms" id="sms" formControlName="sms">
+                                <option value="0">0</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                            </select>
+                            <small class="text-danger">{{msgError.sms}}</small>
+                        </div>
+                        <div class="col-sm-4 mb-3">
+                            <label for="" class="form-label">Call</label>
+                            <select class="form-select form-select-lg {{msgError.call_color}}" name="call" id="call" formControlName="call">
+                                <option value="0">0</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                            </select>
+                            <small class="text-danger">{{msgError.call}}</small>
+                        </div>
+                        <div class="col-sm-4 mb-3">
+                            <label for="" class="form-label">Data</label>
+                            <select class="form-select form-select-lg {{msgError.data_color}}" name="data" id="data" formControlName="data">
+                                <option value="0">0</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                            </select>
+                            <small class="text-danger">{{msgError.data}}</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-footer my-4">
+                    <button (click)="onNextStep(2, formdata.value)" class="btn btn-lg btn-success" type="submit">Continue</button>
+                </div>
+            </div>
+        </ng-template>
+
+        <ng-template #step2>
+            <div class="form-content">
+                <div class="form-header my-4">
+                    <h6 class="text-center">Step 2</h6>
+                    <button class="btn btn-outline-secondary" (click)="onPreviousStep(1)" type="button"><i class="bi bi-arrow-left"></i>Back</button>
+                </div>
+                <div class="form-main my-4">
+                    <h4>Select a validity</h4>
+                    <small>Choice a validity for your package. Between 1 and 30 days</small>
+                    <div class="mb-3">
+                        <label for="" class="form-label">Validity</label>
+                        <select class="form-select form-select-lg {{msgError.validity_color}}" name="validity" id="validity" formControlName="validity">
+                            <option value="1">Day</option>
+                            <option value="3">3 Days</option>
+                            <option value="7">Week</option>
+                            <option value="30">Month</option>
+                        </select>
+                        <small class="text-danger">{{msgError.validity}}</small>
+                    </div>
+                </div>
+                <div class="form-footer my-4">
+                    <button (click)="onNextStep(3, formdata.value)" class="btn btn-lg btn-success" type="submit">Continue</button>
+                </div>
+            </div>
+        </ng-template>
+
+        <ng-template #step3>
+            <div class="form-content">
+                <div class="form-header my-4">
+                    <h6 class="text-center">Step 3</h6>
+                    <button class="btn btn-outline-secondary" (click)="onPreviousStep(2)" type="button"><i class="bi bi-arrow-left"></i>Back</button>
+                </div>
+                <div class="form-main my-4">
+                    <h4>Enter an amount</h4>
+                    <small>How much can you spend?</small>
+                    <div class="mb-3">
+                      <label for="" class="form-label">Amount (in F cfa)</label>
+                      <input type="number" class="form-control {{msgError.price_color}}" name="" id="" aria-describedby="helpId" placeholder="Ex: 100" formControlName="price">
+                      <small id="helpId" class="text-danger">{{msgError.price}}</small>
+                    </div>
+                </div>
+                <div class="form-footer my-4">
+                    <button (click)="onNextStep(4, formdata.value)" class="btn btn-lg btn-success" type="submit">Continue</button>
+                </div>
+            </div>
+        </ng-template>
+
+        <ng-template #step4>
+            <div class="my-4">
+                <h6 class="text-center">Final</h6>
+                <button class="btn btn-outline-secondary" (click)="onPreviousStep(1)" type="button"><i class="bi bi-arrow-left"></i>Restart</button>
+            </div>
+            <div *ngIf="isNotDone; else res"><h4 class="text-center">Loading...</h4></div>
+            <ng-template #res>
+                <div *ngIf="result.length == 0; else list"><h4 class="text-center">Sorry, we can't find something to satisfy you. 😥<br> Verify your priority or validity</h4></div>
+                <ng-template #list>
+                    <h4 class="my-2 text-center">We found a package 🤩. Subscribe to all of this.</h4>
+                    <div class="row mt-5 justify-content-center">
+                        <div class="col-md-4 col-sm-6 my-2" *ngFor="let deal of result">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title">{{deal.name}}</h4>
+                                    <p class="card-text">Call : {{deal.calls}} </p>
+                                    <div *ngIf="deal.data < 1024; else giga"><p class="card-text mb-3">Data : {{deal.data}} Mo</p></div>
+                                    <ng-template #giga>
+                                        <p class="card-text mb-3">Data : {{deal.data / 1024}} Go</p>
+                                    </ng-template>
+                                    <p class="card-text">SMS : {{deal.sms}}</p>
+                                    <p class="card-text">Validity : {{deal.validity}} day(s)</p>
+                                    <button class="btn btn-primary">{{deal.price}} Fcfa</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </ng-template>
+        </ng-template>
+    </form>
+</main>
